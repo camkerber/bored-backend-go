@@ -1,0 +1,58 @@
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  default: standard
+  enable:
+    - bodyclose
+    - copyloopvar
+    - errorlint
+    - gocritic
+    - gosec
+    - misspell
+    - nilerr
+    - noctx
+    - revive
+    - unconvert
+    - unparam
+    - usestdlibvars
+    - wastedassign
+
+  settings:
+    errcheck:
+      check-type-assertions: true
+    # govet's shadow check is deliberately left off: it flags the idiomatic
+    # `if err := f(); err != nil` in every function that already has an err in
+    # scope, which is noise rather than signal.
+    revive:
+      rules:
+        - name: exported
+          # Every exported symbol carries a doc comment.
+          severity: warning
+    gosec:
+      excludes:
+        # G104 duplicates errcheck.
+        - G104
+
+  exclusions:
+    generated: lax
+    rules:
+      # Tests deliberately ignore write errors, use fixed credentials in
+      # assertions, and assert on type conversions.
+      - path: _test\.go
+        linters:
+          - errcheck
+          - gosec
+          - unparam
+          - forcetypeassert
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/camkerber/bored-backend-go

@@ -1,0 +1,31 @@
+app = "bored-backend-go"
+primary_region = "ord"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "3000"
+  CLEANUP_INTERVAL = "1h"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+
+  # The SSE hub is in-process, so every mutation must happen in the machine
+  # that holds the subscribers. Raising max_machines_running above 1 requires
+  # moving fan-out to a MongoDB change stream first - see internal/watcher/sse.go.
+  auto_stop_machines = false
+  min_machines_running = 1
+  max_machines_running = 1
+
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    timeout = "5s"
+    path = "/healthz"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

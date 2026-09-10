@@ -1,0 +1,22 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Build output
+/bin/
+/out/
+/vendor/
+# Anchored to the root: unanchored patterns would also match the
+# cmd/server and cmd/ensureindexes source directories.
+/server
+/ensureindexes
+
+# Test and coverage artifacts
+*.out
+coverage.*
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
